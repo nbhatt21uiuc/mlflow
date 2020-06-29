@@ -57,7 +57,6 @@ def list_experiments(view):
     table = [[exp.experiment_id, exp.name, exp.artifact_location if is_uri(exp.artifact_location)
               else os.path.abspath(exp.artifact_location)] for exp in experiments]
     print(tabulate(sorted(table), headers=["Experiment Id", "Name", "Artifact Location"]))
-    
 
 
 @commands.command("delete")
@@ -81,18 +80,11 @@ def delete_experiment(experiment_id):
     store = _get_store()
     experiments_list=store.list_experiments(ViewType.ACTIVE_ONLY)
     print("the number of experiments is %s." % len(experiments_list))
-    # if len(experiments_list)==1:
-    #     print(len(experiments_list)==1)
-    #     pass
-    #     # store.restore_experiment(experiment_id)
-    # else:
-    #     print("the number of experiments is %s, which is greater than 1." % len(experiments_list))
-    #     store.delete_experiment(experiment_id)
-    #     print("An experiment with ID %s has been deleted." % str(experiment_id))
-    #     print("Now the number of experiments is %s." % len(experiments_list))
-
+    """
+    The following if/else statement is a test which deletes an experiment if the number of experiments is more than 1. Otherwise, if the number of experiments is 1,
+    we get a printed message that says "We are not deleting the experiment to protect you". Thus, this test does not allow the deletion of default experiment 0.
+    """
     if len(experiments_list)>1:
-        # experiments_list1=store.list_experiments(ViewType.ACTIVE_ONLY)
         print("the number of experiments is %s, which is greater than 1." % len(experiments_list))
         store.delete_experiment(experiment_id)
         experiments_list1=store.list_experiments(ViewType.ACTIVE_ONLY)
@@ -100,11 +92,7 @@ def delete_experiment(experiment_id):
         print("Now the number of experiments is %s." % len(experiments_list1))
         print("Experiment with ID %s has been deleted." % str(experiment_id))
     else:
-        print(len(experiments_list)==1)
-        pass
-
-    # store.delete_experiment(experiment_id)
-    # print("Experiment with ID %s has been deleted." % str(experiment_id))
+        print("We are not deleting the experiment to protect you")
 
 
 @commands.command("restore")
