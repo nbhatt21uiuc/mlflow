@@ -66,7 +66,7 @@ def delete_experiment(experiment_id):
     Mark an active experiment for deletion. This also applies to experiment's metadata, runs and
     associated data, and artifacts if they are store in default location. Use ``list`` command to
     view artifact location. Command will throw an error if experiment is not found or already
-    marked for deletion.
+    marked for deletion or it would leave the zeroth experiment.
 
     Experiments marked for deletion can be restored using ``restore`` command, unless they are
     permanently deleted.
@@ -79,20 +79,11 @@ def delete_experiment(experiment_id):
     """
     store = _get_store()
     experiments_list=store.list_experiments(ViewType.ACTIVE_ONLY)
-    print("the number of experiments is %s." % len(experiments_list))
-    """
-    The following if/else statement is a test which deletes an experiment if the number of experiments is more than 1. Otherwise, if the number of experiments is 1,
-    we get a printed message that says "We are not deleting the experiment to protect you". Thus, this test does not allow the deletion of default experiment 0.
-    """
     if len(experiments_list)>1:
-        print("the number of experiments is %s, which is greater than 1." % len(experiments_list))
         store.delete_experiment(experiment_id)
-        experiments_list1=store.list_experiments(ViewType.ACTIVE_ONLY)
-        print("An experiment with ID %s has been deleted." % str(experiment_id))
-        print("Now the number of experiments is %s." % len(experiments_list1))
         print("Experiment with ID %s has been deleted." % str(experiment_id))
     else:
-        print("We are not deleting the experiment to protect you")
+        print("Not allowed to delete last experiment")
 
 
 @commands.command("restore")
